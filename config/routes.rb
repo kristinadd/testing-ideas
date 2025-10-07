@@ -16,7 +16,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      resources :posts
+      resources :posts do
+        collection do
+          get :default  # GET /api/v1/posts/default
+        end
+      end
     end
 
     namespace :v2 do
