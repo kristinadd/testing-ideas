@@ -3,16 +3,16 @@ module Api
     module ApiResponse
       extend ActiveSupport::Concern
 
-      def render_json_with_wrapper(data, options = {})
-        data_array = data.respond_to?(:to_a) ? data.to_a : data
+      def render_json_with_wrapper(serializer_class, collection, options = {})
+        collection_array = collection.respond_to?(:to_a) ? collection.to_a : collection
 
-        if data_array.is_a?(Array)
-          serialized_data = data_array.map { |item| Api::V1::PostSerializer.new(item).as_json }
+        if collection_array.is_a?(Array)
+          serialized_collection = collection_array.map { |item| serializer_class.new(item).as_json }
         else
-          serialized_data = Api::V1::PostSerializer.new(data_array).as_json
+          serialized_collection = serializer_class.new(collection_array).as_json
         end
 
-        response = { data: serialized_data }
+        response = { collection: serialized_collection }
 
         if options[:pagination]
           response[:pagination] = options[:pagination]
