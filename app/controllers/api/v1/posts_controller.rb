@@ -1,13 +1,10 @@
 class Api::V1::PostsController < ApplicationController
   include Api::V1::ApiResponse
+  include Api::V1::CursorPaginator
 
   def index
-    @posts = Post.all
-    render_json_with_wrapper(@posts)
-  end
+    result = paginate_with_cursor(Post.order(:id))
 
-  def show
-    @post = Post.find(params[:id])
-    render_json_with_wrapper(@post)
+    render_json_with_wrapper(result[:records], pagination: result[:pagination])
   end
 end
