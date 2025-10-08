@@ -1,10 +1,6 @@
 class Api::V1::PostSerializer < ActiveModel::Serializer
   attributes :id, :title, :content, :author, :created_at, :archived, :published
 
-  def created_at
-    object.created_at.strftime("%B %d, %Y")
-  end
-
   attribute :word_count do
     object.content.split.length
   end
