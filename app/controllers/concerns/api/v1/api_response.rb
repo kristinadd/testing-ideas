@@ -12,7 +12,7 @@ module Api
           serialized_collection = serializer_class.new(collection_array).as_json
         end
 
-        response = { collection: serialized_collection }
+        response = { data: serialized_collection }
 
         if options[:pagination]
           response[:pagination] = options[:pagination]
