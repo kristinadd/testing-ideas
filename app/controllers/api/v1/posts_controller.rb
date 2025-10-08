@@ -1,10 +1,41 @@
-class Api::V1::PostsController < ApplicationController
+class Api::V1::PostsController < Api::BaseController
   include Api::V1::ApiResponse
   include Api::V1::CursorPaginator
+
+  # Temporary: ensure CSRF protection is disabled
+  protect_from_forgery with: :null_session
 
   def index
     result = paginate_with_cursor(Post.order(:id))
 
     render_json_with_wrapper(Api::V1::PostSerializer, result[:records], pagination: result[:pagination])
+  end
+
+  def show
+    @post = Post.find(params[:id])
+    render_json_with_wrapper(Api::V1::PostSerializer, @post)
+  end
+
+  def create
+    post = Api::V1::CreatePostService.call(post_params[:title], post_params[:content], post_params[:author])
+
+    if post
+      render_json_with_wrapper(Api::V1::PostSerializer, post)
+    else
+      render json: { error: "Failed to create post" }, status: :unprocessable_entity
+    end
+  rescue => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+
+  private
+  def post_params
+    # Handle nested data structure from API requests
+    if params[:data].present?
+      params.require(:data).permit(:title, :content, :author)
+    else
+      params.permit(:title, :content, :author)
+    end
   end
 end
