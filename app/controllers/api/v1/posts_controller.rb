@@ -5,6 +5,6 @@ class Api::V1::PostsController < ApplicationController
   def index
     result = paginate_with_cursor(Post.order(:id))
 
-    render_json_with_wrapper(result[:records], pagination: result[:pagination])
+    render_json_with_wrapper(Api::V1::PostSerializer, result[:records], pagination: result[:pagination])
   end
 end
