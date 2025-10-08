@@ -3,18 +3,7 @@ class Api::V1::PostsController < ApplicationController
 
   def index
     @posts = Post.all
-    render_json_with_wrapper(@posts,
-      meta: {
-        total: @posts.count,
-        page: 1,
-        per_page: @posts.count
-      },
-      links: {
-        self: api_v1_posts_url,
-        first: api_v1_posts_url,
-        last: api_v1_posts_url
-      }
-    )
+    render_json_with_wrapper(@posts)
   end
 
   def show
