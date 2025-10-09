@@ -31,11 +31,7 @@ class Api::V1::PostsController < Api::BaseController
 
   private
   def post_params
-    # Handle nested data structure from API requests
-    if params[:data].present?
-      params.require(:data).permit(:title, :content, :author)
-    else
-      params.permit(:title, :content, :author)
-    end
+    Rails.logger.info "🔍 Post Params: #{params.inspect}"
+    params.require(:data).permit(:title, :content, :author)
   end
 end
