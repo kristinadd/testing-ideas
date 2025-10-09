@@ -15,15 +15,15 @@ module Api
         post.status = "draft"
         post.published_at = nil
 
-        if post.save
-          post
+        if post.save!
+          { success: true, post: post }
         else
           Rails.logger.error "Failed to create post: #{post.errors.full_messages.join(', ')}"
-          nil
+          { success: false, errors: post.errors.full_messages }
         end
       rescue => e
-        Rails.logger.error "Failed to create post: #{e.message}"
-        nil
+        Rails.logger.error "🩸 Failed to create post Service Exception: #{e.message}"
+        { success: false, errors: [ e.message ] }
       end
     end
   end
