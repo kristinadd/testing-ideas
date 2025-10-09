@@ -17,12 +17,12 @@ class Api::V1::PostsController < Api::BaseController
   end
 
   def create
-    post = Api::V1::CreatePostService.call(post_params[:title], post_params[:content], post_params[:author])
+    result = Api::V1::CreatePostService.call(post_params[:title], post_params[:content], post_params[:author])
 
-    if post
-      render_json_with_wrapper(Api::V1::PostSerializer, post)
+    if result[:success]
+      render_json_with_wrapper(Api::V1::PostSerializer, result[:post])
     else
-      render json: { error: "Failed to create post" }, status: :unprocessable_entity
+      render json: { error: "😵‍💫 #{result[:errors].join(', ')}" }, status: :unprocessable_entity
     end
   rescue => e
     render json: { error: e.message }, status: :unprocessable_entity
