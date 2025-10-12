@@ -10,4 +10,5 @@ end
 # Configure queues
 Sidekiq.configure_server do |config|
   config.queues = %w[default bulk high low]
+  # config.concurrency = 10 # default is 25
 end
