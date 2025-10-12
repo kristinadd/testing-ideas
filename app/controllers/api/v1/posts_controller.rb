@@ -20,6 +20,9 @@ class Api::V1::PostsController < Api::BaseController
     result = Api::V1::CreatePostService.call(post_params[:title], post_params[:content], post_params[:author])
 
     if result[:success]
+      # Enqueue a job to process the post
+      ProcessPostJob.perform_async(result[:post].id, "process")
+
       render_json_with_wrapper(Api::V1::PostSerializer, result[:post])
     else
       render json: { error: "😵‍💫 #{result[:errors].join(', ')}" }, status: :unprocessable_entity
